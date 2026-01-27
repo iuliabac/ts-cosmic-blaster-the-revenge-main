@@ -11,9 +11,9 @@ import Laser from './Laser.js';
 export default class CosmicBlaster extends Game {
   private canvas: HTMLCanvasElement;
 
-  private scoreItems: ScoreItem[];
+  private scoreItems: ScoreItem[] = [];
 
-  private lasers: Laser[];
+  private lasers: Laser[] = [];
 
   private player: Player;
 
@@ -35,22 +35,29 @@ export default class CosmicBlaster extends Game {
     this.mouseListener = new MouseListener(this.canvas, true);
     this.canvas.style.cursor = 'none';
 
-    this.alliesShot = 0;
-    this.timeElapsed = 0;
+    this.player = new Player(this.canvas.height);
 
     this.timeToNext = Math.random() * 500;
+
     this.score = 0;
 
-    this.scoreItems = [];
-    this.lasers = [];
-    this.player = new Player(this.canvas.height);
+    this.alliesShot = 0;
+
+    this.timeElapsed = 0;
   }
 
   /**
-   * Create a new item to fly through space.
-   *
-   * It can either be a new power up or a new meteor, depending on random chance.
+   * Process all input. Called from the GameLoop.
    */
+  public processInput(): void {
+    this.player.move(this.mouseListener.getMousePosition().y);
+
+    if (this.mouseListener.buttonPressed(MouseListener.BUTTON_LEFT)) {
+      this.lasers.push(new Laser(this.player.getPosX() + this.player.getWidth(), this.player.getPosY() + this.player.getHeight() / 2));
+    }
+  }
+
+
   private makeItem(delta: number): void {
     this.timeToNext -= delta;
 
@@ -67,15 +74,7 @@ export default class CosmicBlaster extends Game {
     }
   }
 
-  /**
-   * Process all input. Called from the GameLoop.
-   */
-  public processInput(): void {
-    if (this.mouseListener.buttonPressed(MouseListener.BUTTON_LEFT)) {
-      this.lasers.push(new Laser(this.player.getPosX() + this.player.getWidth(), this.player.getPosY() + this.player.getHeight() / 2));
-    }
-    this.player.move(this.mouseListener.getMousePosition().y);
-  }
+
 
   /**
    * Update game state. Called from the GameLoop
