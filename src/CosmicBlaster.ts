@@ -70,7 +70,7 @@ export default class CosmicBlaster extends Game {
         this.scoreItems.push(new Ship(this.canvas.width, this.canvas.height));
       }
 
-      this.timeToNext = (Math.random() * 300) + 300;
+      this.timeToNext = Math.random() * 500;
     }
   }
 
@@ -83,30 +83,44 @@ export default class CosmicBlaster extends Game {
    * @returns true if the game should continue
    */
   public update(delta: number): boolean {
-    // Update the time elapsed
+    this.makeItem(delta);
+
     this.timeElapsed += delta;
 
+    for (const item of this.scoreItems) {
+      item.update(delta);
+    }
+
+    for (const laser of this.lasers) {
+      laser.update(delta);
+    }
+
     for (let i: number = this.scoreItems.length - 1; i >= 0; i--) {
-      this.scoreItems[i].update(delta);
-      if (this.scoreItems[i].getPosX() < 0) {
+      const item: ScoreItem = this.scoreItems[i];
+
+      if (item.getPosX() + item.getWidth() < 0) {
         this.scoreItems.splice(i, 1);
       }
     }
 
     for (let i: number = this.lasers.length - 1; i >= 0; i--) {
-      this.lasers[i].update(delta);
-      if (this.lasers[i].getPosX() > this.canvas.width) {
+      const laser: Laser = this.lasers[i];
+
+      if (laser.getPosX() + laser.getWidth() > this.canvas.width) {
         this.lasers.splice(i, 1);
       }
     }
 
     for (let i: number = this.scoreItems.length - 1; i >= 0; i--) {
       for (let j: number = this.lasers.length - 1; j >= 0; j--) {
-        if (this.scoreItems[i].isColliding(this.lasers[j])) {
-          if (this.scoreItems[i] instanceof Ship) {
+        const item: ScoreItem = this.scoreItems[i];
+        const laser: Laser = this.lasers[j];
+
+        if (item.isColliding(laser)) {
+          if (item instanceof Ship) {
             this.alliesShot += 1;
           }
-          this.score += this.scoreItems[i].getScore();
+          this.score += item.getScore();
           this.scoreItems.splice(i, 1);
           this.lasers.splice(j, 1);
         }
@@ -119,11 +133,8 @@ export default class CosmicBlaster extends Game {
       return (item.getPosX() > 0);
     });
 
-
-    this.makeItem(delta);
-
     // Return true if the game should continue
-    return !this.isGameOver();
+    return !this.gameOver();
   }
 
   /**
@@ -131,7 +142,7 @@ export default class CosmicBlaster extends Game {
    *
    * @returns True if game is over
    */
-  private isGameOver(): boolean {
+  private gameOver(): boolean {
     return (this.alliesShot >= 10 || this.score > 100);
   }
 
@@ -147,7 +158,7 @@ export default class CosmicBlaster extends Game {
     this.player.render(this.canvas);
 
     // Render the score and time left
-    if (this.isGameOver()) {
+    if (this.gameOver()) {
       CanvasRenderer.writeText(this.canvas, 'Game Over', this.canvas.width / 2, this.canvas.height / 2, 'center', 'Arial', 60, 'white');
     }
 

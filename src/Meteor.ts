@@ -7,8 +7,8 @@ export default class Meteor extends ScoreItem {
   public constructor(maxX: number, maxY: number) {
     super();
 
-    const randomSize: number = Math.random();
-    if (randomSize > 0.4) {
+    const random: number = Math.random();
+    if (random > 0.4) {
       this.image = CanvasRenderer.loadNewImage('./assets/meteor_brown_big.png');
       this.speed = 0.04 + (Math.random() * 0.1);
       this.score = 5;
