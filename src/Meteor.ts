@@ -29,7 +29,7 @@ export default class Meteor extends ScoreItem {
    * @param elapsed the elapsed time from the Game
    */
   public update(elapsed: number): void {
-    this.speed *= (1.00002) ** elapsed;
+    this.speed *= (1.000) ** elapsed;
     this.posX -= elapsed * (this.speed);
   }
 }

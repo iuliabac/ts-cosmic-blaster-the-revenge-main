@@ -37,7 +37,7 @@ export default class CosmicBlaster extends Game {
 
     this.player = new Player(this.canvas.height);
 
-    this.timeToNext = Math.random() * 500;
+    this.timeToNext = 500;
 
     this.score = 0;
 
@@ -98,7 +98,7 @@ export default class CosmicBlaster extends Game {
     for (let i: number = this.scoreItems.length - 1; i >= 0; i--) {
       const item: ScoreItem = this.scoreItems[i];
 
-      if (item.getPosX() + item.getWidth() < 0) {
+      if (item.getPosX() < 0) {
         this.scoreItems.splice(i, 1);
       }
     }
