@@ -37,7 +37,7 @@ export default class CosmicBlaster extends Game {
 
     this.player = new Player(this.canvas.height);
 
-    this.timeToNext = 500;
+    this.timeToNext = Math.random() * 500;
 
     this.score = 0;
 
