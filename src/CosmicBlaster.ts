@@ -127,12 +127,6 @@ export default class CosmicBlaster extends Game {
       }
     }
 
-    // Loop through all the items and check if they collide with the player
-    // Remove all items that are out of the screen
-    this.scoreItems = this.scoreItems.filter((item: ScoreItem) => {
-      return (item.getPosX() > 0);
-    });
-
     // Return true if the game should continue
     return !this.gameOver();
   }
